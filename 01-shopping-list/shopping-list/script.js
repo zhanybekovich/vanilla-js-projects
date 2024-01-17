@@ -83,14 +83,33 @@ function onAddItemSubmit(e) {
 }
 
 // Remove Item
-function removeItem(e) {
-  if (e.target.parentElement.classList.contains("remove-item")) {
-    if (confirm("Are You Sure?")) {
-      e.target.parentElement.parentElement.remove();
-      // checkUI
-      checkUI();
-    }
+function removeItem(item) {
+  if (confirm("Are you sure")) {
+    // remove item from DOM
+    item.remove();
+
+    // remove item from storage
+    removeItemFromStorage(item.textContent);
+
+    checkUI();
   }
+}
+
+function onClickItem(e) {
+  if (e.target.parentElement.classList.contains("remove-item")) {
+    removeItem(e.target.parentElement.parentElement);
+  }
+}
+
+// remove item from Storage
+function removeItemFromStorage(item) {
+  let itemsFromStorage = getItemsFromStorage();
+
+  // filter out item to be removed
+  itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
+
+  // reset to storage
+  localStorage.setItem("items", JSON.stringify(itemsFromStorage));
 }
 
 // Clear All Items
@@ -101,6 +120,8 @@ function clearItems() {
     itemList.removeChild(itemList.firstChild);
   }
 
+  // clear from LocalStorage
+  localStorage.removeItem("items");
   // checkUI
   checkUI();
 }
@@ -147,7 +168,7 @@ function displayItems() {
 function init() {
   // Event Listeners
   itemForm.addEventListener("submit", onAddItemSubmit);
-  itemList.addEventListener("click", removeItem);
+  itemList.addEventListener("click", onClickItem);
   clearBtn.addEventListener("click", clearItems);
   itemFilter.addEventListener("input", filterItems);
   document.addEventListener("DOMContentLoaded", displayItems);
