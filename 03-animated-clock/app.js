@@ -98,6 +98,10 @@ function clock() {
   ctx.restore();
 
   ctx.restore(); // restore default state
+
+  requestAnimationFrame(clock);
 }
 
-clock();
+// clock();
+
+requestAnimationFrame(clock);
